@@ -1,82 +1,95 @@
 <template>
   <div>
-    <div v-for="card in cards" :key="card.id" class="card text-bg-light mb-3" @click="toggleCard(card.id)">
-      <div class="card-header">{{ card.subject }}</div>
-      <div v-if="card.showAnswer" class="card-body">
-        <p><strong>Question:</strong> {{ card.question }}</p>
-        <p><strong>Answer:</strong> {{ card.answer }}</p>
+    <div v-for="flashcard in flashcards" :key="flashcard.id" class="card text-bg-light mb-3" @click="toggleFlashcard(flashcard.id)">
+      <div class="card-header">{{ flashcard.subject }}</div>
+      <div class="card-body">
+        <p><strong>Topic:</strong> {{ flashcard.topic }}</p>
+        <p><strong>Question:</strong> {{ flashcard.question }}</p>
+        <p v-if="flashcard.showAnswer"><strong>Answer:</strong> {{ flashcard.answer }}</p>
+        <p><strong>Rating:</strong> {{ flashcard.rating }}</p>
       </div>
     </div>
 
-    <form @submit.prevent="createCard">
-      <label for="cardSubject">Subject:</label>
-      <input v-model="newCardSubject" type="text" id="cardSubject" required style="width: 150px"/>
+    <form @submit.prevent="createFlashcard">
+      <label for="flashcardSubject">Subject:</label>
+      <input v-model="newFlashcardSubject" type="text" id="flashcardSubject" required style="width: 150px;"/>
 
-      <label for="cardQuestion">Question:</label>
-      <input v-model="newCardQuestion" type="text" id="cardQuestion" required />
+      <label for="flashcardTopic">Topic:</label>
+      <input v-model="newFlashcardTopic" type="text" id="flashcardTopic" required />
 
-      <label for="cardAnswer">Answer:</label>
-      <input v-model="newCardAnswer" type="text" id="cardAnswer" required />
+      <label for="flashcardQuestion">Question:</label>
+      <input v-model="newFlashcardQuestion" type="text" id="flashcardQuestion" required />
 
-      <button type="submit">Create Card</button>
+      <label for="flashcardAnswer">Answer:</label>
+      <input v-model="newFlashcardAnswer" type="text" id="flashcardAnswer" required />
+
+      <label for="flashcardRating">Rating:</label>
+      <input v-model="newFlashcardRating" type="number" id="flashcardRating" required style="width: 100px"/>
+
+      <button type="submit">Create Flashcard</button>
     </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useStore } from 'vuex';
+import axios from 'axios';
 
-const store = useStore();
-const cards = ref(store.state.cards);
-const newCardSubject = ref('');
-const newCardQuestion = ref('');
-const newCardAnswer = ref('');
+const flashcards = ref([]);
+const newFlashcardSubject = ref('');
+const newFlashcardTopic = ref('');
+const newFlashcardQuestion = ref('');
+const newFlashcardRating = ref(0);
+const newFlashcardAnswer = ref('');
 let lastUsedId = ref(0);
 
-const createCard = () => {
+const createFlashcard = async () => {
   lastUsedId.value += 1;
-  const newCard = {
+  const newFlashcard = {
     id: lastUsedId.value,
-    subject: newCardSubject.value,
-    question: newCardQuestion.value,
-    answer: newCardAnswer.value,
-    showAnswer: false, // Initially hide the answer
+    subject: newFlashcardSubject.value,
+    topic: newFlashcardTopic.value,
+    question: newFlashcardQuestion.value,
+    rating: newFlashcardRating.value,
+    answer: newFlashcardAnswer.value,
+    showAnswer: false,
   };
 
-  store.commit('addCard', newCard);
-  newCardSubject.value = '';
-  newCardQuestion.value = '';
-  newCardAnswer.value = '';
+  try {
+    const response = await axios.post('http://localhost:8080/flashcards', newFlashcard);
+    console.log(response.data); // Assuming the backend returns the saved flashcard
+  } catch (error) {
+    console.error('Error saving flashcard:', error);
+  }
+
+  // ... rest of your code
 };
 
-const toggleCard = (cardId) => {
-  const cardIndex = cards.value.findIndex((card) => card.id === cardId);
-  if (cardIndex !== -1) {
-    // Toggle the showAnswer property for the clicked card
-    cards.value[cardIndex].showAnswer = !cards.value[cardIndex].showAnswer;
+const toggleFlashcard = (id) => {
+  const flashcard = flashcards.value.find((f) => f.id === id);
+  if (flashcard) {
+    flashcard.showAnswer = !flashcard.showAnswer;
   }
 };
 </script>
 
 <style scoped>
-/* Add your existing styles here if needed */
+/* Add your styles here if needed */
+.card {
+  cursor: pointer;
+}
+
+.card-body {
+  /* Add styling for the revealed content */
+}
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Add spacing between input fields */
+  gap: 1rem;
 }
 
 label {
-  margin-bottom: 0.5rem; /* Add spacing below labels */
-}
-
-/* Add additional styling for the card and revealed content if needed */
-.card {
-  cursor: pointer;
-  /* Add additional styling for the card */
+  margin-bottom: 0.5rem;
 }
 </style>
-
-

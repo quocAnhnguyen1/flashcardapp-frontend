@@ -10,6 +10,7 @@ import HelloWorld from './components/HelloWorld.vue'
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/flashcards">Flashcards</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
       <h1>Create your flashcard to start studying!</h1>
