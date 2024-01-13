@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-for="flashcard in flashcards" :key="flashcard.id" class="card text-bg-light mb-3" @click="toggleFlashcard(flashcard.id)">
+    <div v-for="flashcard in flashcards" :key="flashcard.id" class="card text-bg-light mb-3" style="max-width: 18rem;">
       <div class="card-header">{{ flashcard.subject }}</div>
       <div class="card-body">
         <p><strong>Topic:</strong> {{ flashcard.topic }}</p>
@@ -41,12 +41,17 @@ const newFlashcardTopic = ref('');
 const newFlashcardQuestion = ref('');
 const newFlashcardRating = ref(0);
 const newFlashcardAnswer = ref('');
-let lastUsedId = ref(0);
 
+const loadFlashcards = async () => {
+  try{
+    const response = await axios.get('http://localhost:8080/flashcards')
+    flashcards.value = response.data;
+  }catch (error){
+    console.error('Error fetching flashcards:', error);
+  }
+};
 const createFlashcard = async () => {
-  lastUsedId.value += 1;
   const newFlashcard = {
-    id: lastUsedId.value,
     subject: newFlashcardSubject.value,
     topic: newFlashcardTopic.value,
     question: newFlashcardQuestion.value,
@@ -62,25 +67,19 @@ const createFlashcard = async () => {
     console.error('Error saving flashcard:', error);
   }
 
-  // ... rest of your code
 };
 
-const toggleFlashcard = (id) => {
-  const flashcard = flashcards.value.find((f) => f.id === id);
-  if (flashcard) {
-    flashcard.showAnswer = !flashcard.showAnswer;
-  }
-};
 </script>
 
 <style scoped>
 /* Add your styles here if needed */
 .card {
+  border: 1px antiquewhite;
+  margin-bottom: 15px;
   cursor: pointer;
 }
-
-.card-body {
-  /* Add styling for the revealed content */
+.card-body{
+  padding: 10px;
 }
 
 form {

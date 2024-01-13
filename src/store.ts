@@ -5,6 +5,8 @@ interface Card {
     subject: string;
     question: string;
     answer: string;
+    showAnswer: boolean;
+    rating: number;
 }
 
 interface State {

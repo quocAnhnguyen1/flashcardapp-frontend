@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import FlashcardsView from "@/views/FlashcardsView.vue";
+import FlashcardsView from '../views/FlashcardsView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
