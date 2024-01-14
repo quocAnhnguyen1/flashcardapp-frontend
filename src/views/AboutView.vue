@@ -5,6 +5,12 @@
 </template>
 
 <style>
+.about {
+  background: linear-gradient(to right, #8B0000, #000000);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgb(0, 0, 0, 0.5);
+}
 @media (min-width: 1024px) {
   .about {
     min-height: 100vh;

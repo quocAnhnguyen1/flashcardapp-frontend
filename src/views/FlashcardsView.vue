@@ -1,27 +1,30 @@
 <template>
   <div>
     <div class="card-container">
-    <div v-for="flashcard in flashcards" :key="flashcard.id" class="card text-bg-light mb-3" @click="toggleShowAnswer(flashcard.id)">
-      <div class="card-content">
-        <button @click="deleteFlashcard(flashcard.id)" class="delete-button">X</button>
-          <div class="card-header">{{ flashcard.subject }}</div>
-          <div class="card-body">
-            <p><span class="topic">Topic:</span> {{ flashcard.topic }}</p>
-            <p><span class="question">Question:</span> {{ flashcard.question }}</p>
+      <div v-for="flashcard in flashcards" :key="flashcard.id">
+          <div v-for="flashcard in flashcards" :key="flashcard.id" class="card text-bg-light mb-3" @click="toggleShowAnswer(flashcard.id)">
+            <div class="card-content">
+              <button @click="deleteFlashcard(flashcard.id)" class="delete-button">X</button>
+              <div class="card-header">{{ flashcard.subject }}</div>
+              <div class="card-body">
+                <p><span class="topic">Topic:</span> {{ flashcard.topic }}</p>
+                <p><span class="question">Question:</span> {{ flashcard.question }}</p>
+              </div>
+              <div v-if="flashcard.showAnswer" class="card-answer">
+                <p><span class="answer">Answer:</span> <span class="answer-text">{{ flashcard.answer }}</span></p>
+              </div>
+              <div class="rating-line">
+                <p><span class="rating">Rating:</span> {{ flashcard.rating }}</p>
+              </div>
+            </div>
           </div>
-        <div v-if="flashcard.showAnswer" class="card-answer">
-          <p><span class="answer">Answer:</span> <span class="answer-text">{{ flashcard.answer }}</span></p>
-        </div>
-        <div class="rating-line">
-          <p><span class="rating">Rating:</span> {{ flashcard.rating }}</p>
-        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import 'vue-multiselect/dist/vue-multiselect.min.css'
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
@@ -29,7 +32,8 @@ const flashcards = ref([]);
 onMounted(async () => {
   try{
     const response = await axios.get('http://localhost:8080/flashcards');
-    flashcards.value = response.dataM
+    flashcards.value = response.data
+    addGroupStartMarkers();
   } catch (error){
     console.error('Error fetching flashcards:', error);
   }
@@ -41,11 +45,13 @@ const toggleShowAnswer = (id) => {
     flashcard.showAnswer = !flashcard.showAnswer;
   }
 };
+
+
 const loadFlashcards = async () => {
   try {
     const response = await axios.get('http://localhost:8080/flashcards');
     flashcards.value = response.data;
-  } catch (error){
+  } catch (error) {
     console.error('Error fetching flashcards:', error);
   }
 };
@@ -113,5 +119,11 @@ onMounted(loadFlashcards);
   border: #222222;
   padding: 5px;
   font-weight: bold;
+}
+.card-container {
+  background: linear-gradient(to right, #8B0000, #000000);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 </style>

@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <form @submit.prevent="createFlashcard">
+    <form @submit.prevent="createFlashcard" class="flashcard-form">
       <label for="flashcardSubject">Subject:</label>
       <input v-model="newFlashcardSubject" type="text" id="flashcardSubject" required style="width: 150px;"/>
 
@@ -72,7 +72,12 @@ const createFlashcard = async () => {
 </script>
 
 <style scoped>
-/* Add your styles here if needed */
+.flashcard-form {
+  background: linear-gradient(to right, #8B0000, #000000);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
 .card {
   border: 1px antiquewhite;
   margin-bottom: 15px;

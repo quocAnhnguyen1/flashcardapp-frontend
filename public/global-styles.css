@@ -1,0 +1,5 @@
+body {
+    margin: 0;
+    background: linear-gradient(to right, #8B0000, #000000); /* Adjust colors as needed */
+    color: white; /* Adjust text color as needed */
+}
